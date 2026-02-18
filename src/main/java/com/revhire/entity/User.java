@@ -33,12 +33,13 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    // Relationships will be added after JobSeekerProfile and EmployerProfile are created
-    // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    // private JobSeekerProfile jobSeekerProfile;
 
-    // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    // private EmployerProfile employerProfile;
+   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+     private JobSeekerProfile jobSeekerProfile;
+
+     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private EmployerProfile employerProfile;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
