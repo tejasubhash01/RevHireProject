@@ -39,7 +39,7 @@ public class JobPost extends BaseEntity {
     private Boolean isActive = true;
     private Boolean isFilled = false;
 
-    // The applications field will be added later after JobApplication is created
-    // @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL)
-    // private List<JobApplication> applications;
+
+     @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL)
+     private List<JobApplication> applications;
 }
