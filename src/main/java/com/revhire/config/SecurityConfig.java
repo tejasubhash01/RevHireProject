@@ -33,6 +33,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/health", "/api/info", "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/jobseekers/**").hasRole("JOB_SEEKER")
+                        .requestMatchers("/api/v1/employers/**").hasRole("EMPLOYER")
+                        .requestMatchers("/api/v1/jobs/**").hasRole("EMPLOYER")
+                        .requestMatchers("/api/v1/applications/**").authenticated()
+                        .requestMatchers("/api/v1/favourites/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
