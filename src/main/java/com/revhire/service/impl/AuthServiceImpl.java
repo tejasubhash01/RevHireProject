@@ -10,6 +10,7 @@ import com.revhire.repository.*;
 import com.revhire.security.JwtService;
 import com.revhire.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -31,7 +33,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
+
+        log.info("Registration attempt for email: {}", request.getEmail());
+
         if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("Registration failed — email already registered: {}", request.getEmail());
             throw new BadRequestException("Email already registered");
         }
 
@@ -43,15 +49,29 @@ public class AuthServiceImpl implements AuthService {
                 .location(request.getLocation())
                 .role(request.getRole())
                 .build();
+
         user = userRepository.save(user);
 
+        log.info("User registered successfully with id {} and role {}",
+                user.getId(), user.getRole());
+
         if (request.getRole() == Role.JOB_SEEKER) {
+
+            log.debug("Creating JobSeeker profile for user {}", user.getEmail());
+
             JobSeekerProfile profile = JobSeekerProfile.builder()
                     .user(user)
                     .employmentStatus(request.getEmploymentStatus())
                     .build();
+
             jobSeekerProfileRepository.save(profile);
+
+            log.info("JobSeeker profile created for user {}", user.getEmail());
+
         } else if (request.getRole() == Role.EMPLOYER) {
+
+            log.debug("Creating Employer profile for user {}", user.getEmail());
+
             EmployerProfile profile = EmployerProfile.builder()
                     .user(user)
                     .companyName(request.getCompanyName())
@@ -61,23 +81,40 @@ public class AuthServiceImpl implements AuthService {
                     .website(request.getWebsite())
                     .location(request.getLocation())
                     .build();
+
             employerProfileRepository.save(profile);
+
+            log.info("Employer profile created for user {}", user.getEmail());
         }
 
         String token = jwtService.generateToken(user);
+
+        log.info("JWT token generated for user {}", user.getEmail());
+
         return new AuthResponse(token, user.getEmail(), user.getRole(), user.getName());
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
+
+        log.info("Login attempt for email: {}", request.getEmail());
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
+        log.debug("Authentication successful for email: {}", request.getEmail());
+
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("Login failed — user not found: {}", request.getEmail());
+                    return new UsernameNotFoundException("User not found");
+                });
 
         String token = jwtService.generateToken(user);
+
+        log.info("User {} logged in successfully", user.getEmail());
+
         return new AuthResponse(token, user.getEmail(), user.getRole(), user.getName());
     }
 }

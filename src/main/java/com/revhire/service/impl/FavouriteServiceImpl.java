@@ -12,27 +12,38 @@ import com.revhire.repository.JobPostRepository;
 import com.revhire.repository.UserRepository;
 import com.revhire.service.FavouriteService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class FavouriteServiceImpl implements FavouriteService {
+
     private final UserRepository userRepository;
     private final JobPostRepository jobPostRepository;
     private final FavouriteJobRepository favouriteRepository;
 
     private User getUser(UserDetails userDetails) {
+        log.debug("Fetching user with email: {}", userDetails.getUsername());
         return userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", userDetails.getUsername());
+                    return new NotFoundException("User not found");
+                });
     }
 
     private JobPost getJobPost(Long jobId) {
+        log.debug("Fetching job post with id: {}", jobId);
         return jobPostRepository.findById(jobId)
-                .orElseThrow(() -> new NotFoundException("Job post not found"));
+                .orElseThrow(() -> {
+                    log.error("Job post not found with id: {}", jobId);
+                    return new NotFoundException("Job post not found");
+                });
     }
 
     private FavouriteJobResponse mapToDto(FavouriteJob fav) {
@@ -51,27 +62,69 @@ public class FavouriteServiceImpl implements FavouriteService {
     @Override
     @Transactional
     public void addFavourite(UserDetails currentUser, Long jobId) {
+
+        log.info("User {} attempting to add job {} to favourites",
+                currentUser.getUsername(), jobId);
+
         User user = getUser(currentUser);
         JobPost jobPost = getJobPost(jobId);
-        if (favouriteRepository.existsByUserIdAndJobPostId(user.getId(), jobId))
+
+        if (favouriteRepository.existsByUserIdAndJobPostId(user.getId(), jobId)) {
+            log.warn("User {} tried to add job {} which is already in favourites",
+                    user.getEmail(), jobId);
             throw new BadRequestException("Job already in favourites");
-        FavouriteJob fav = FavouriteJob.builder().user(user).jobPost(jobPost).build();
+        }
+
+        FavouriteJob fav = FavouriteJob.builder()
+                .user(user)
+                .jobPost(jobPost)
+                .build();
+
         favouriteRepository.save(fav);
+
+        log.info("Job {} successfully added to favourites for user {}",
+                jobId, user.getEmail());
     }
 
     @Override
     public List<FavouriteJobResponse> getMyFavourites(UserDetails currentUser) {
+
+        log.info("Fetching favourites for user {}", currentUser.getUsername());
+
         User user = getUser(currentUser);
-        return favouriteRepository.findByUserId(user.getId()).stream()
-                .map(this::mapToDto).collect(Collectors.toList());
+
+        List<FavouriteJobResponse> favourites = favouriteRepository
+                .findByUserId(user.getId())
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+
+        log.info("User {} has {} favourite jobs",
+                user.getEmail(), favourites.size());
+
+        return favourites;
     }
 
     @Override
     @Transactional
     public void removeFavourite(UserDetails currentUser, Long jobId) {
+
+        log.info("User {} attempting to remove job {} from favourites",
+                currentUser.getUsername(), jobId);
+
         User user = getUser(currentUser);
-        FavouriteJob fav = favouriteRepository.findByUserIdAndJobPostId(user.getId(), jobId)
-                .orElseThrow(() -> new NotFoundException("Favourite not found"));
+
+        FavouriteJob fav = favouriteRepository
+                .findByUserIdAndJobPostId(user.getId(), jobId)
+                .orElseThrow(() -> {
+                    log.warn("Favourite not found for user {} and job {}",
+                            user.getEmail(), jobId);
+                    return new NotFoundException("Favourite not found");
+                });
+
         favouriteRepository.delete(fav);
+
+        log.info("Job {} removed from favourites for user {}",
+                jobId, user.getEmail());
     }
 }
