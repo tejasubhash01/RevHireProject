@@ -33,6 +33,7 @@ public class JobSeekerController {
         return ApiResponse.success("Profile retrieved", profile);
     }
 
+
     @PutMapping("/profile")
     public ApiResponse<JobSeekerProfileDto> updateProfile(@AuthenticationPrincipal UserDetails currentUser,
                                                           @Valid @RequestBody CreateJobSeekerProfileRequest request) {
