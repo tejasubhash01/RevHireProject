@@ -175,24 +175,43 @@ public class JobSeekerServiceImpl implements JobSeekerService {
     @Override
     @Transactional
     public ResumeFileDto uploadResumeFile(UserDetails currentUser, MultipartFile file) throws IOException {
-        if (file.isEmpty()) throw new BadRequestException("File is empty");
-        if (file.getSize() > 2 * 1024 * 1024) throw new BadRequestException("File size exceeds 2MB");
+
+        if (file.isEmpty())
+            throw new BadRequestException("File is empty");
+
+        if (file.getSize() > 2 * 1024 * 1024)
+            throw new BadRequestException("File size exceeds 2MB");
+
         String contentType = file.getContentType();
         if (contentType == null || !(contentType.equals("application/pdf") ||
                 contentType.equals("application/msword") ||
                 contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document"))) {
             throw new BadRequestException("Only PDF and DOCX files are allowed");
         }
+
         User user = getUser(currentUser);
         JobSeekerProfile profile = getProfile(user);
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+
+        //  Safe directory handling
+        String directory = (uploadDir == null || uploadDir.isBlank())
+                ? "./uploads/resumes"
+                : uploadDir;
+
+        Path uploadPath = Paths.get(directory);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String filename = UUID.randomUUID() + extension;
+
         Path filePath = uploadPath.resolve(filename);
         Files.copy(file.getInputStream(), filePath);
+
         ResumeFile resumeFile = profile.getResumeFile();
+
         if (resumeFile == null) {
             resumeFile = ResumeFile.builder()
                     .jobSeekerProfile(profile)
@@ -203,23 +222,29 @@ public class JobSeekerServiceImpl implements JobSeekerService {
                     .uploadDate(LocalDateTime.now())
                     .build();
         } else {
-            Path oldPath = Paths.get(resumeFile.getFilePath());
-            try { Files.deleteIfExists(oldPath); } catch (IOException e) { }
+            try {
+                Path oldPath = Paths.get(resumeFile.getFilePath());
+                Files.deleteIfExists(oldPath);
+            } catch (IOException ignored) {}
+
             resumeFile.setFileName(originalFilename);
             resumeFile.setFileType(contentType);
             resumeFile.setFilePath(filePath.toString());
             resumeFile.setFileSize(file.getSize());
             resumeFile.setUploadDate(LocalDateTime.now());
         }
+
         resumeFile = resumeFileRepository.save(resumeFile);
         profile.setResumeFile(resumeFile);
         profileRepository.save(profile);
+
         ResumeFileDto dto = new ResumeFileDto();
         dto.setId(resumeFile.getId());
         dto.setFileName(resumeFile.getFileName());
         dto.setFileType(resumeFile.getFileType());
         dto.setFileSize(resumeFile.getFileSize());
         dto.setUploadDate(resumeFile.getUploadDate());
+
         return dto;
     }
 

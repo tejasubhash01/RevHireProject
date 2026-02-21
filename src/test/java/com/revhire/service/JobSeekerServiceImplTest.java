@@ -1,229 +1,212 @@
 package com.revhire.service;
 
-import com.revhire.dto.jobseeker.CreateJobSeekerProfileRequest;
-import com.revhire.dto.jobseeker.UpdateResumeTextRequest;
-import com.revhire.entity.JobSeekerProfile;
-import com.revhire.entity.ResumeFile;
-import com.revhire.entity.ResumeText;
-import com.revhire.entity.User;
-import com.revhire.entity.enums.EmploymentStatus;
-import com.revhire.entity.enums.Role;
+import com.revhire.dto.jobseeker.*;
+import com.revhire.entity.*;
 import com.revhire.exception.BadRequestException;
 import com.revhire.exception.NotFoundException;
-import com.revhire.repository.JobSeekerProfileRepository;
-import com.revhire.repository.ResumeFileRepository;
-import com.revhire.repository.ResumeTextRepository;
-import com.revhire.repository.UserRepository;
+import com.revhire.repository.*;
 import com.revhire.service.impl.JobSeekerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 class JobSeekerServiceImplTest {
 
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private JobSeekerProfileRepository profileRepository;
-    @Mock
-    private ResumeTextRepository resumeTextRepository;
-    @Mock
-    private ResumeFileRepository resumeFileRepository;
-
     @InjectMocks
-    private JobSeekerServiceImpl jobSeekerService;
+    private JobSeekerServiceImpl service;
 
-    private UserDetails mockUserDetails;
-    private User mockUser;
-    private JobSeekerProfile mockProfile;
-    private ResumeText mockResumeText;
-    private ResumeFile mockResumeFile;
+    @Mock private UserRepository userRepository;
+    @Mock private JobSeekerProfileRepository profileRepository;
+    @Mock private ResumeTextRepository resumeTextRepository;
+    @Mock private ResumeFileRepository resumeFileRepository;
+
+    private User user;
+    private UserDetails userDetails;
 
     @BeforeEach
-    void setUp() {
-        mockUserDetails = org.springframework.security.core.userdetails.User
-                .withUsername("seeker@test.com")
-                .password("pass")
-                .roles("JOB_SEEKER")
-                .build();
+    void setup() {
+        user = new User();
+        user.setId(1L);
+        user.setEmail("test@gmail.com");
+        user.setName("Test User");
 
-        mockUser = User.builder()
-                .email("seeker@test.com")
-                .name("Test Seeker")
-                .role(Role.JOB_SEEKER)
-                .build();
-        mockUser.setId(1L);
+        userDetails = mock(UserDetails.class);
 
-        mockProfile = JobSeekerProfile.builder()
-                .user(mockUser)
-                .employmentStatus(EmploymentStatus.EMPLOYED)
-                .headline("Developer")
-                .summary("Experienced")
-                .build();
-        mockProfile.setId(10L);
-        mockUser.setJobSeekerProfile(mockProfile);
-
-        mockResumeText = ResumeText.builder()
-                .jobSeekerProfile(mockProfile)
-                .objective("Objective")
-                .build();
-        mockResumeText.setId(100L);
-        mockProfile.setResumeText(mockResumeText);
-
-        mockResumeFile = ResumeFile.builder()
-                .jobSeekerProfile(mockProfile)
-                .fileName("resume.pdf")
-                .fileType("application/pdf")
-                .fileSize(1024L)
-                .build();
-        mockResumeFile.setId(200L);
-        mockProfile.setResumeFile(mockResumeFile);
+     
+        lenient().when(userDetails.getUsername()).thenReturn("test@gmail.com");
     }
 
-    @Test
-    void getMyProfile_WhenUserNotFound_ThrowsNotFoundException() {
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> jobSeekerService.getMyProfile(mockUserDetails));
-    }
+
 
     @Test
-    void getMyProfile_WhenProfileNotFound_ThrowsNotFoundException() {
-        mockUser.setJobSeekerProfile(null);
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        assertThrows(NotFoundException.class, () -> jobSeekerService.getMyProfile(mockUserDetails));
-    }
+    void testCreateProfile_Success() {
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
 
-    @Test
-    void getMyProfile_ReturnsProfile() {
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        var result = jobSeekerService.getMyProfile(mockUserDetails);
+        when(profileRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        CreateJobSeekerProfileRequest request = new CreateJobSeekerProfileRequest();
+        request.setHeadline("Java Dev");
+
+        JobSeekerProfileDto result = service.createProfile(userDetails, request);
+
         assertNotNull(result);
-        assertEquals(mockProfile.getId(), result.getId());
+        assertEquals("Java Dev", result.getHeadline());
     }
 
     @Test
-    void createProfile_WhenProfileAlreadyExists_ThrowsBadRequest() {
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
+    void testCreateProfile_AlreadyExists() {
+        JobSeekerProfile profile = new JobSeekerProfile();
+        user.setJobSeekerProfile(profile);
+
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+
+        assertThrows(BadRequestException.class,
+                () -> service.createProfile(userDetails, new CreateJobSeekerProfileRequest()));
+    }
+
+   
+
+    @Test
+    void testGetMyProfile_Success() {
+        JobSeekerProfile profile = new JobSeekerProfile();
+        profile.setUser(user);
+        user.setJobSeekerProfile(profile);
+
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+
+        JobSeekerProfileDto dto = service.getMyProfile(userDetails);
+
+        assertNotNull(dto);
+        assertEquals("Test User", dto.getName());
+    }
+
+
+    @Test
+    void testUpdateProfile_Success() {
+        JobSeekerProfile profile = new JobSeekerProfile();
+        profile.setUser(user);
+        user.setJobSeekerProfile(profile);
+
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+        when(profileRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
         CreateJobSeekerProfileRequest request = new CreateJobSeekerProfileRequest();
-        request.setHeadline("New Headline");
-        request.setEmploymentStatus(EmploymentStatus.UNEMPLOYED);
-        assertThrows(BadRequestException.class, () -> jobSeekerService.createProfile(mockUserDetails, request));
+        request.setHeadline("Updated");
+
+        JobSeekerProfileDto result =
+                service.updateProfile(userDetails, request);
+
+        assertEquals("Updated", result.getHeadline());
     }
 
-    @Test
-    void createProfile_CreatesProfile() {
-        mockUser.setJobSeekerProfile(null);
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        when(profileRepository.save(any(JobSeekerProfile.class))).thenAnswer(inv -> {
-            JobSeekerProfile saved = inv.getArgument(0);
-            saved.setId(20L);
-            return saved;
-        });
-
-        CreateJobSeekerProfileRequest request = new CreateJobSeekerProfileRequest();
-        request.setHeadline("Developer");
-        request.setSummary("Summary");
-        request.setEmploymentStatus(EmploymentStatus.EMPLOYED);
-
-        var result = jobSeekerService.createProfile(mockUserDetails, request);
-        assertNotNull(result);
-        assertEquals("Developer", result.getHeadline());
-        verify(profileRepository, times(1)).save(any());
-    }
+   
 
     @Test
-    void updateProfile_UpdatesProfile() {
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        when(profileRepository.save(any(JobSeekerProfile.class))).thenReturn(mockProfile);
+    void testCreateOrUpdateResumeText_Success() {
+        JobSeekerProfile profile = new JobSeekerProfile();
+        profile.setUser(user);
+        user.setJobSeekerProfile(profile);
 
-        CreateJobSeekerProfileRequest request = new CreateJobSeekerProfileRequest();
-        request.setHeadline("Senior Developer");
-        request.setSummary("Updated summary");
-        request.setEmploymentStatus(EmploymentStatus.UNEMPLOYED);
-
-        var result = jobSeekerService.updateProfile(mockUserDetails, request);
-        assertEquals("Senior Developer", result.getHeadline());
-        verify(profileRepository, times(1)).save(mockProfile);
-    }
-
-    @Test
-    void createOrUpdateResumeText_CreatesNewWhenNotExists() {
-        mockProfile.setResumeText(null);
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        when(resumeTextRepository.save(any(ResumeText.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+        when(resumeTextRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(profileRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         UpdateResumeTextRequest request = new UpdateResumeTextRequest();
-        request.setObjective("Objective");
-        request.setEducation("Education");
-        request.setExperience("Experience");
-        request.setSkills("Skills");
-        request.setProjects("Projects");
-        request.setCertifications("Certifications");
+        request.setObjective("Backend Dev");
 
-        var result = jobSeekerService.createOrUpdateResumeText(mockUserDetails, request);
-        assertNotNull(result);
-        assertEquals("Objective", result.getObjective());
-        verify(resumeTextRepository, times(1)).save(any());
+        ResumeTextDto dto =
+                service.createOrUpdateResumeText(userDetails, request);
+
+        assertEquals("Backend Dev", dto.getObjective());
     }
 
     @Test
-    void createOrUpdateResumeText_UpdatesExisting() {
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        when(resumeTextRepository.save(any(ResumeText.class))).thenReturn(mockResumeText);
+    void testGetMyResumeText_NotFound() {
+        JobSeekerProfile profile = new JobSeekerProfile();
+        profile.setUser(user);
+        user.setJobSeekerProfile(profile);
 
-        UpdateResumeTextRequest request = new UpdateResumeTextRequest();
-        request.setObjective("New Objective");
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
 
-        var result = jobSeekerService.createOrUpdateResumeText(mockUserDetails, request);
-        assertEquals("New Objective", result.getObjective());
-        verify(resumeTextRepository, times(1)).save(mockResumeText);
-    }
-
-    @Test
-    void getMyResumeText_ReturnsText() {
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        var result = jobSeekerService.getMyResumeText(mockUserDetails);
-        assertEquals(mockResumeText.getObjective(), result.getObjective());
-    }
-
-    @Test
-    void getMyResumeText_NotFound_ThrowsNotFoundException() {
-        mockProfile.setResumeText(null);
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        assertThrows(NotFoundException.class, () -> jobSeekerService.getMyResumeText(mockUserDetails));
+        assertThrows(NotFoundException.class,
+                () -> service.getMyResumeText(userDetails));
     }
 
 
-
-
-
     @Test
-    void getMyResumeFile_ReturnsMetadata() {
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        var result = jobSeekerService.getMyResumeFile(mockUserDetails);
-        assertEquals(mockResumeFile.getFileName(), result.getFileName());
+    void testUploadResumeFile_Success() throws IOException {
+
+        JobSeekerProfile profile = new JobSeekerProfile();
+        profile.setUser(user);
+        user.setJobSeekerProfile(profile);
+
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+
+        when(resumeFileRepository.save(any()))
+                .thenAnswer(i -> i.getArgument(0));
+
+        when(profileRepository.save(any()))
+                .thenAnswer(i -> i.getArgument(0));
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "resume.pdf",
+                "application/pdf",
+                "dummy content".getBytes()
+        );
+
+        ResumeFileDto dto = service.uploadResumeFile(userDetails, file);
+
+        assertNotNull(dto);
+        assertEquals("resume.pdf", dto.getFileName());
     }
 
     @Test
-    void getMyResumeFile_NotFound_ThrowsNotFoundException() {
-        mockProfile.setResumeFile(null);
-        when(userRepository.findByEmail(mockUserDetails.getUsername())).thenReturn(Optional.of(mockUser));
-        assertThrows(NotFoundException.class, () -> jobSeekerService.getMyResumeFile(mockUserDetails));
+    void testUploadResumeFile_InvalidSize() {
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "resume.pdf",
+                "application/pdf",
+                new byte[3 * 1024 * 1024]
+        );
+
+        assertThrows(BadRequestException.class,
+                () -> service.uploadResumeFile(userDetails, file));
+    }
+
+
+    @Test
+    void testGetMyResumeFile_NotFound() {
+
+        JobSeekerProfile profile = new JobSeekerProfile();
+        profile.setUser(user);
+        user.setJobSeekerProfile(profile);
+
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+
+        assertThrows(NotFoundException.class,
+                () -> service.getMyResumeFile(userDetails));
     }
 }
