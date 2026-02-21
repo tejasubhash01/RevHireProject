@@ -45,11 +45,11 @@ class JobSeekerServiceImplTest {
 
         userDetails = mock(UserDetails.class);
 
-        // ✅ Make it lenient to avoid
+     
         lenient().when(userDetails.getUsername()).thenReturn("test@gmail.com");
     }
 
-    // ================= CREATE PROFILE =================
+
 
     @Test
     void testCreateProfile_Success() {
@@ -79,7 +79,7 @@ class JobSeekerServiceImplTest {
                 () -> service.createProfile(userDetails, new CreateJobSeekerProfileRequest()));
     }
 
-    // ================= GET PROFILE =================
+   
 
     @Test
     void testGetMyProfile_Success() {
@@ -96,7 +96,6 @@ class JobSeekerServiceImplTest {
         assertEquals("Test User", dto.getName());
     }
 
-    // ================= UPDATE PROFILE =================
 
     @Test
     void testUpdateProfile_Success() {
@@ -117,7 +116,7 @@ class JobSeekerServiceImplTest {
         assertEquals("Updated", result.getHeadline());
     }
 
-    // ================= RESUME TEXT =================
+   
 
     @Test
     void testCreateOrUpdateResumeText_Success() {
@@ -152,7 +151,6 @@ class JobSeekerServiceImplTest {
                 () -> service.getMyResumeText(userDetails));
     }
 
-    // ================= FILE UPLOAD =================
 
     @Test
     void testUploadResumeFile_Success() throws IOException {
@@ -197,7 +195,6 @@ class JobSeekerServiceImplTest {
                 () -> service.uploadResumeFile(userDetails, file));
     }
 
-    // ================= GET FILE =================
 
     @Test
     void testGetMyResumeFile_NotFound() {
