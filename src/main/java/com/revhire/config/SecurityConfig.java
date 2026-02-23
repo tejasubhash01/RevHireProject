@@ -1,9 +1,10 @@
 package com.revhire.config;
-
+import org.springframework.http.HttpMethod;
 import com.revhire.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,12 +34,32 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/health", "/api/info", "/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+
+                        // Allow job seeker to access their own profile
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jobseekers/profile/me").hasRole("JOB_SEEKER")
+
+                        // Allow employers to view other job seeker profiles
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jobseekers/profile/**").hasAnyRole("EMPLOYER", "ADMIN")
+
+                        // Allow employers to download resume files
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jobseekers/resume/file/**").hasAnyRole("EMPLOYER", "ADMIN")
+
+                        // Job seeker only endpoints (this must come AFTER the more specific rules)
                         .requestMatchers("/api/v1/jobseekers/**").hasRole("JOB_SEEKER")
+
+                        // Employer only (including job write operations)
+                        .requestMatchers(HttpMethod.POST, "/api/v1/jobs").hasRole("EMPLOYER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/jobs/**").hasRole("EMPLOYER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/jobs/**").hasRole("EMPLOYER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/jobs/**").hasRole("EMPLOYER")
                         .requestMatchers("/api/v1/employers/**").hasRole("EMPLOYER")
-                        .requestMatchers("/api/v1/jobs/**").hasRole("EMPLOYER")
+
+                        // Authenticated for applications and favourites
                         .requestMatchers("/api/v1/applications/**").authenticated()
                         .requestMatchers("/api/v1/favourites/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
