@@ -85,7 +85,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         dto.setCoverLetter(app.getCoverLetter());
         dto.setAppliedDate(app.getAppliedDate());
 
-        // ✅ resume fields
+
         ResumeText rt = app.getJobSeeker().getResumeText();
         if (rt != null) {
             dto.setEducation(rt.getEducation());
