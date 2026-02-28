@@ -1,0 +1,21 @@
+<div class="favourites-container">
+  <h1>My Favourites</h1>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && favourites.length === 0" class="no-data">
+    No favourites yet. <a routerLink="/jobs">Browse Jobs</a>
+  </div>
+
+  <div *ngFor="let fav of favourites" class="favourite-card">
+    <h3>{{ fav.jobPost.title }}</h3>
+    <p class="company">{{ fav.jobPost.companyName }}</p>
+    <p class="location">{{ fav.jobPost.location }}</p>
+    <p class="job-type">{{ fav.jobPost.jobType }}</p>
+    <div class="actions">
+      <a [routerLink]="['/jobs', fav.jobPost.id]" class="btn-view">View Job</a>
+      <button (click)="remove(fav.jobPost.id)" class="btn-remove">Remove</button>
+    </div>
+  </div>
+</div>

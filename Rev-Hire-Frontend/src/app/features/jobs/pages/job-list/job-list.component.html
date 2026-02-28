@@ -1,0 +1,79 @@
+<div class="job-list-container">
+  <div class="search-section">
+    <h2>Find Your Dream Job Today!</h2>
+
+    <div class="search-form">
+      <input
+        type="text"
+        placeholder="Job Title"
+        [(ngModel)]="filter.title"
+      />
+
+      <input
+        type="text"
+        placeholder="Location"
+        [(ngModel)]="filter.location"
+      />
+
+      <select [(ngModel)]="filter.jobType">
+        <option value="">Job Type</option>
+        <option value="FULL_TIME">Full Time</option>
+        <option value="PART_TIME">Part Time</option>
+        <option value="INTERNSHIP">Internship</option>
+      </select>
+
+      <select [(ngModel)]="experienceRange">
+        <option value="">Experience</option>
+        <option value="0-1">0–1 yrs</option>
+        <option value="2-4">2–4 yrs</option>
+        <option value="5-10">5+ yrs</option>
+      </select>
+
+      <select [(ngModel)]="salaryRange">
+        <option value="">Salary</option>
+        <option value="0-500000">0–5 LPA</option>
+        <option value="500000-1000000">5–10 LPA</option>
+        <option value="1000000-2000000">10+ LPA</option>
+      </select>
+
+      <button class="search-btn" (click)="search()">Search</button>
+    </div>
+  </div>
+
+  <div class="jobs">
+    <div *ngFor="let job of jobs" class="job-card">
+      <h3>{{ job.title }}</h3>
+      <p class="company">{{ job.companyName }}</p>
+      <p class="location">{{ job.location }}</p>
+      <p class="description">{{ job.description | slice: 0:120 }}...</p>
+
+      <div class="job-footer">
+        <span *ngIf="job.salaryMin" class="salary">
+          ₹{{ job.salaryMin }} - ₹{{ job.salaryMax }}
+        </span>
+        <button
+          class="view-details-btn"
+          [routerLink]="['/jobs', job.id]"
+        >
+          View Details
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="changePage(page - 1)" [disabled]="page === 0">
+      Prev
+    </button>
+    <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button
+      (click)="changePage(page + 1)"
+      [disabled]="page === totalPages - 1"
+    >
+      Next
+    </button>
+  </div>
+</div>

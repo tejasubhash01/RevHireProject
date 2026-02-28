@@ -1,0 +1,13 @@
+<div class="enums-container">
+  <h1>Enum Values</h1>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="enums" class="enums-list">
+    <div *ngFor="let key of objectKeys(enums)" class="enum-item">
+      <h3>{{ key }}</h3>
+      <ul>
+        <li *ngFor="let value of enums[key]">{{ value }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

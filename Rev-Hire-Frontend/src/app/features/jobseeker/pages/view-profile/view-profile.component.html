@@ -1,0 +1,18 @@
+<div class="profile-container view-mode">
+  <h1>My Profile</h1>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="profile && !loading" class="profile-details">
+    <p><strong>Name:</strong> {{ profile.name }}</p>
+    <p><strong>Email:</strong> {{ profile.email }}</p>
+    <p><strong>Phone:</strong> {{ profile.phone || 'N/A' }}</p>
+    <p><strong>Location:</strong> {{ profile.location || 'N/A' }}</p>
+    <p><strong>Employment Status:</strong> {{ profile.employmentStatus || 'N/A' }}</p>
+    <p><strong>Headline:</strong> {{ profile.headline || 'N/A' }}</p>
+    <p><strong>Summary:</strong> {{ profile.summary || 'N/A' }}</p>
+  </div>
+  <div class="actions">
+    <a routerLink="/jobseeker/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    <a routerLink="/jobseeker/profile" class="btn btn-primary">Edit Profile</a>
+  </div>
+</div>

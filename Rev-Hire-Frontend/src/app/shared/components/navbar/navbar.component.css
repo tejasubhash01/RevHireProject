@@ -1,0 +1,117 @@
+nav {
+  background-color: #2c3e50;
+  padding: 0.75rem 1rem;   /* ✅ smaller default */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 12px;               /* ✅ prevent crush */
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  min-width: 120px;        /* ✅ keep logo space */
+}
+
+.logo {
+  height: 52px;            /* ✅ bigger logo only */
+  width: auto;
+  object-fit: contain;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.75rem;            /* ✅ reduce gap */
+  align-items: center;
+  flex-wrap: wrap;         /* ✅ key for mobile */
+  justify-content: flex-end;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  white-space: nowrap;     /* ✅ prevents breaking words */
+}
+
+.nav-links a:hover {
+  background-color: #34495e;
+}
+
+.nav-links a.active {
+  background-color: #3498db;
+}
+
+.notification-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s;
+}
+
+.notification-icon:hover {
+  background-color: #34495e;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* ✅ Mobile rules */
+@media (max-width: 768px) {
+  nav {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .logo {
+    height: 46px;
+  }
+
+  .nav-links {
+    gap: 0.4rem;
+  }
+
+  .nav-links a {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-container {
+    flex-wrap: wrap;           /* ✅ moves links below if needed */
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;   /* ✅ looks clean on phone */
+    margin-top: 8px;
+  }
+}

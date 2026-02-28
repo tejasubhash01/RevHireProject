@@ -1,0 +1,125 @@
+.resume-container {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.success {
+  color: green;
+  text-align: center;
+  margin-top: 10px;
+}
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+}
+.load-error {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+.file-upload-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+.file-info {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+.upload-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+input[type="file"] {
+  padding: 5px;
+}
+.back-btn {
+  width: auto;
+  padding: 6px 12px;
+  margin-bottom: 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background-color: #007bff;
+}
+/* Back button */
+/* Back button */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  /* Spacing from navbar */
+  margin-top: 20px;           /* space from navbar */
+  margin-bottom: 16px;        /* space between button & resume card */
+
+  padding: 6px 14px;          /* neat size */
+  font-size: 14px;
+  font-weight: 500;
+
+  color: #2e62d3;             /* normal text color */
+  background-color: #fff;     /* normal button background */
+  border: 1px solid #2e62d3;
+  border-radius: 6px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  /* Optional: align to left edge of container */
+  margin-left: calc((100% - 700px) / 2);
+}
+
+/* Hover effect */
+.back-btn:hover {
+  background-color: #2e62d3;  /* dark blue background */
+  color: #fff;                /* white text on hover */
+  border-color: #2e62d3;      /* match border to background */
+}

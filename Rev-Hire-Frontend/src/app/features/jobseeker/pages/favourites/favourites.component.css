@@ -1,0 +1,60 @@
+.favourites-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 20px;
+}
+.favourite-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.favourite-card h3 {
+  margin: 0 0 5px;
+}
+.company {
+  font-weight: 500;
+  color: #007bff;
+  margin: 5px 0;
+}
+.location, .job-type {
+  color: #666;
+  margin: 5px 0;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+.btn-view {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.btn-view:hover {
+  background-color: #0056b3;
+}
+.btn-remove {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-remove:hover {
+  background-color: #c82333;
+}
+.error, .no-data {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}

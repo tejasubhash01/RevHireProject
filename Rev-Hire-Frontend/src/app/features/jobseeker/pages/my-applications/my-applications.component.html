@@ -1,0 +1,51 @@
+<div class="applications-container">
+  <h1>My Applications</h1>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!loading && applications.length === 0" class="no-data">
+    You haven't applied to any jobs yet. <a routerLink="/jobs">Browse Jobs</a>
+  </div>
+
+  <div *ngFor="let app of applications" class="application-card">
+    <h3>{{ app.jobTitle }}</h3>
+    <p class="company">{{ app.companyName }}</p>
+    <p class="applied-date">Applied: {{ app.appliedDate | date:'medium' }}</p>
+   <p class="status" [ngClass]="getStatusClass(app.status)">
+  Status: {{ app.status }}
+</p>
+
+<p *ngIf="app.coverLetter" class="cover-letter">
+  Cover Letter: {{ app.coverLetter }}
+</p>
+
+
+<p *ngIf="app.employerNotes" class="employer-note">
+  Employer Note: {{ app.employerNotes }}
+</p>
+    <div class="actions">
+      <button *ngIf="app.status !== 'WITHDRAWN'" (click)="openWithdrawModal(app.id)" class="btn-withdraw">Withdraw</button>
+      <a [routerLink]="['/jobs', app.jobPostId]" class="btn-view">View Job</a>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="showWithdrawModal" (click)="closeWithdrawModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Withdraw Application</h3>
+    <p>Are you sure you want to withdraw this application?</p>
+    <div class="form-group">
+      <label for="reason">Reason (optional):</label>
+      <textarea
+        id="reason"
+        [(ngModel)]="withdrawReason"
+        rows="3"
+        placeholder="Enter reason for withdrawal"
+        class="form-control"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button (click)="confirmWithdraw()" class="btn-danger">Withdraw</button>
+      <button (click)="closeWithdrawModal()" class="btn-secondary">Cancel</button>
+    </div>
+  </div>
+</div>

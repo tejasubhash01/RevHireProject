@@ -1,0 +1,79 @@
+.notifications-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.btn-mark-all {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-mark-all:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+.notification-item.unread {
+  background-color: #f0f7ff;
+  border-left: 4px solid #007bff;
+}
+.notification-content {
+  flex: 1;
+}
+.message {
+  margin: 0 0 5px;
+  font-weight: 500;
+}
+.time {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+.view-link {
+  display: inline-block;
+  margin-top: 5px;
+  color: #007bff;
+  text-decoration: none;
+}
+.view-link:hover {
+  text-decoration: underline;
+}
+.btn-read {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-read:hover {
+  background-color: #218838;
+}
+.error, .no-data {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}

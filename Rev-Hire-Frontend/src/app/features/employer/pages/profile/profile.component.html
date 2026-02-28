@@ -1,0 +1,43 @@
+<button class="btn btn-secondary back-btn" (click)="goBack()">
+  ← Back
+</button>
+<div class="profile-container">
+  <h1>Company Profile</h1>
+  <form *ngIf="profile" (ngSubmit)="onSubmit()" #profileForm="ngForm">
+    <div class="form-group">
+      <label for="companyName">Company Name *</label>
+      <input type="text" id="companyName" name="companyName" [(ngModel)]="profile.companyName" required>
+    </div>
+    <div class="form-group">
+      <label for="industry">Industry</label>
+      <input type="text" id="industry" name="industry" [(ngModel)]="profile.industry">
+    </div>
+    <div class="form-group">
+      <label for="companySize">Company Size</label>
+      <select id="companySize" name="companySize" [(ngModel)]="profile.companySize">
+        <option value="">Select</option>
+        <option value="1-10">1-10 employees</option>
+        <option value="11-50">11-50 employees</option>
+        <option value="51-200">51-200 employees</option>
+        <option value="201-500">201-500 employees</option>
+        <option value="500+">500+ employees</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="description">Company Description</label>
+      <textarea id="description" name="companyDescription" [(ngModel)]="profile.companyDescription" rows="5"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="website">Website</label>
+      <input type="url" id="website" name="website" [(ngModel)]="profile.website">
+    </div>
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" [(ngModel)]="profile.location">
+    </div>
+    <button type="submit" [disabled]="profileForm.invalid">Update Profile</button>
+    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </form>
+  <div *ngIf="loading">Loading...</div>
+</div>

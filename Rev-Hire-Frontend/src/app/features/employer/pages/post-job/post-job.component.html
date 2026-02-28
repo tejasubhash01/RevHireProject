@@ -1,0 +1,75 @@
+<button class="btn btn-secondary" (click)="goBack()">
+  ← Back to Dashboard
+</button>
+<div class="post-job-container">
+  <h1>Post a New Job</h1>
+  <form (ngSubmit)="onSubmit()" #jobForm="ngForm">
+    <div class="form-group">
+      <label for="title">Job Title *</label>
+      <input type="text" id="title" name="title" [(ngModel)]="jobData.title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description *</label>
+      <textarea id="description" name="description" [(ngModel)]="jobData.description" rows="6" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="skills">Required Skills (comma separated)</label>
+      <input type="text" id="skills" name="skills" [(ngModel)]="skillsInput" placeholder="e.g. Java, Spring, MySQL">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group half">
+        <label for="exp">Experience Required</label>
+        <input type="text" id="exp" name="experienceRequired" [(ngModel)]="jobData.experienceRequired">
+      </div>
+      <div class="form-group half">
+        <label for="edu">Education Required</label>
+        <input type="text" id="edu" name="educationRequired" [(ngModel)]="jobData.educationRequired">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" [(ngModel)]="jobData.location">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group half">
+        <label for="salaryMin">Salary Min (₹)</label>
+        <input type="number" id="salaryMin" name="salaryMin" [(ngModel)]="jobData.salaryMin">
+      </div>
+      <div class="form-group half">
+        <label for="salaryMax">Salary Max (₹)</label>
+        <input type="number" id="salaryMax" name="salaryMax" [(ngModel)]="jobData.salaryMax">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="jobType">Job Type *</label>
+      <select id="jobType" name="jobType" [(ngModel)]="jobData.jobType" required>
+        <option value="">Select</option>
+        <option value="FULL_TIME">Full Time</option>
+        <option value="PART_TIME">Part Time</option>
+        <option value="CONTRACT">Contract</option>
+        <option value="INTERNSHIP">Internship</option>
+        <option value="REMOTE">Remote</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="deadline">Application Deadline</label>
+      <input type="date" id="deadline" name="applicationDeadline" [(ngModel)]="jobData.applicationDeadline">
+    </div>
+
+    <div class="form-group">
+      <label for="openings">Number of Openings</label>
+      <input type="number" id="openings" name="numberOfOpenings" [(ngModel)]="jobData.numberOfOpenings">
+    </div>
+
+    <button type="submit" [disabled]="jobForm.invalid">Post Job</button>
+    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </form>
+</div>

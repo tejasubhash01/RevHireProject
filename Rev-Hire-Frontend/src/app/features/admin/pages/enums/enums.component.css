@@ -1,0 +1,30 @@
+.enums-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+h1 {
+  margin-bottom: 20px;
+}
+.enum-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.enum-item h3 {
+  margin: 0 0 10px;
+  color: #007bff;
+}
+ul {
+  margin: 0;
+  padding-left: 20px;
+}
+li {
+  margin: 5px 0;
+}
+.error {
+  color: red;
+  text-align: center;
+}

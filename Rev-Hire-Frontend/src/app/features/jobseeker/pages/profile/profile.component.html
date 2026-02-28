@@ -1,0 +1,27 @@
+<div class="profile-container">
+  <h1>Job Seeker Profile</h1>
+  <form *ngIf="profile" (ngSubmit)="onSubmit()" #profileForm="ngForm">
+    <div class="form-group">
+      <label for="headline">Headline</label>
+      <input type="text" id="headline" name="headline" [(ngModel)]="profile.headline">
+    </div>
+    <div class="form-group">
+      <label for="summary">Summary</label>
+      <textarea id="summary" name="summary" [(ngModel)]="profile.summary" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="employmentStatus">Employment Status</label>
+      <select id="employmentStatus" name="employmentStatus" [(ngModel)]="profile.employmentStatus">
+        <option value="">Select</option>
+        <option value="EMPLOYED">Employed</option>
+        <option value="UNEMPLOYED">Unemployed</option>
+        <option value="STUDENT">Student</option>
+        <option value="OTHER">Other</option>
+      </select>
+    </div>
+    <button type="submit" [disabled]="profileForm.invalid">Update Profile</button>
+    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </form>
+  <div *ngIf="loading">Loading...</div>
+</div>

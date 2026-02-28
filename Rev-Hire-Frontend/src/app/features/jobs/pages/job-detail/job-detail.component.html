@@ -1,0 +1,85 @@
+<div class="job-detail-container" *ngIf="!loading && !error">
+  <div *ngIf="job" class="job-card">
+    <h1>{{ job.title }}</h1>
+    <p class="company">{{ job.companyName }}</p>
+    <p class="location">{{ job.location }}</p>
+
+    <div class="meta-row">
+      <div class="meta-item salary" *ngIf="job.salaryMin">
+        <span class="meta-label">Salary</span>
+        <span class="meta-value">₹{{ job.salaryMin | number }} - ₹{{ job.salaryMax | number }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Job Type</span>
+        <span class="meta-value">{{ job.jobType }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Deadline</span>
+        <span class="meta-value">{{ job.applicationDeadline | date }}</span>
+      </div>
+    </div>
+
+    <h3>Description</h3>
+    <p class="description">{{ job.description }}</p>
+
+    <h3>Required Skills</h3>
+    <ul>
+      <li *ngFor="let skill of job.requiredSkills">{{ skill }}</li>
+    </ul>
+
+    <h3>Experience Required</h3>
+    <p>{{ job.experienceRequired }}</p>
+
+    <h3>Education Required</h3>
+    <p>{{ job.educationRequired }}</p>
+
+    <h3>Number of Openings</h3>
+    <p>{{ job.numberOfOpenings }}</p>
+
+    <div *ngIf="authService.isLoggedIn() && authService.getRole() === 'JOB_SEEKER'" class="favourite-section">
+      <button (click)="toggleFavourite()" class="favourite-btn">
+        {{ isFavourite ? '★ Remove from Favourites' : '☆ Save to Favourites' }}
+      </button>
+    </div>
+
+
+    <div class="apply-section" *ngIf="job.isActive && !job.isFilled">
+      <div *ngIf="!authService.isLoggedIn()">
+        <p><a routerLink="/login">Login</a> as a job seeker to apply.</p>
+      </div>
+      <div *ngIf="authService.isLoggedIn() && authService.getRole() === 'JOB_SEEKER'">
+        <button (click)="toggleApplyForm()" class="apply-btn">
+          {{ showApplyForm ? 'Cancel' : 'Apply for this Job' }}
+        </button>
+        <div *ngIf="showApplyForm" class="apply-form">
+          <h3>Submit Your Application</h3>
+          <textarea
+            [(ngModel)]="coverLetter"
+            placeholder="Optional cover letter"
+            rows="5"
+          ></textarea>
+          <div class="form-actions">
+            <button (click)="submitApplication()" class="submit-btn">Submit Application</button>
+            <button (click)="toggleApplyForm()" class="cancel-btn">Cancel</button>
+          </div>
+        </div>
+
+
+        <p *ngIf="applySuccess" class="success">{{ applySuccess }}</p>
+        <p *ngIf="applyError" class="error">{{ applyError }}</p>
+      </div>
+      <div *ngIf="authService.isLoggedIn() && authService.getRole() !== 'JOB_SEEKER'">
+        <p class="info">Only job seekers can apply.</p>
+      </div>
+    </div>
+
+    <div *ngIf="job && (!job.isActive || job.isFilled)" class="closed-message">
+      This job is no longer accepting applications.
+    </div>
+
+    <a routerLink="/jobs" class="back-link">← Back to Jobs</a>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading">Loading job details...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

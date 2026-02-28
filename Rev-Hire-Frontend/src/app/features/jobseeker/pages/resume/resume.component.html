@@ -1,0 +1,67 @@
+<button
+  type="button"
+  class="back-btn"
+  (click)="goBack()"
+>
+  ← Back
+</button>
+<div class="resume-container">
+  <h1>Resume</h1>
+
+  <!-- Loading indicator -->
+  <div *ngIf="loading">Loading...</div>
+
+  <!-- Load error message (if any) -->
+  <div *ngIf="loadError" class="load-error">{{ loadError }}</div>
+
+  <!-- Text Resume Form -->
+  <form *ngIf="!loading" (ngSubmit)="onSubmit()" #resumeForm="ngForm">
+    <div class="form-group">
+      <label for="objective">Objective</label>
+      <textarea id="objective" name="objective" [(ngModel)]="resumeText.objective" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="education">Education</label>
+      <textarea id="education" name="education" [(ngModel)]="resumeText.education" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="experience">Experience</label>
+      <textarea id="experience" name="experience" [(ngModel)]="resumeText.experience" rows="6"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="skills">Skills</label>
+      <textarea id="skills" name="skills" [(ngModel)]="resumeText.skills" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="projects">Projects</label>
+      <textarea id="projects" name="projects" [(ngModel)]="resumeText.projects" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="certifications">Certifications</label>
+      <textarea id="certifications" name="certifications" [(ngModel)]="resumeText.certifications" rows="4"></textarea>
+    </div>
+    <button type="submit" [disabled]="resumeForm.invalid">Save Resume</button>
+    <p *ngIf="saveSuccess" class="success">{{ saveSuccess }}</p>
+    <p *ngIf="saveError" class="error">{{ saveError }}</p>
+  </form>
+
+  <!-- Resume File Upload Section -->
+  <div class="file-upload-section">
+    <h3>Resume File (PDF/DOCX)</h3>
+    <div *ngIf="resumeFile" class="file-info">
+      <p>Current file: {{ resumeFile.fileName }} ({{ (resumeFile.fileSize / 1024) | number:'1.0-0' }} KB)</p>
+      <p>Uploaded: {{ resumeFile.uploadDate | date:'medium' }}</p>
+    </div>
+    <div *ngIf="!resumeFile && !uploadLoading">
+      <p>No file uploaded yet.</p>
+    </div>
+
+    <div class="upload-form">
+      <input type="file" (change)="onFileSelected($event)" accept=".pdf,.docx,.doc" #fileInput>
+      <button (click)="uploadFile()" [disabled]="!selectedFile || uploadLoading">Upload</button>
+      <span *ngIf="uploadLoading">Uploading...</span>
+    </div>
+    <p *ngIf="uploadSuccess" class="success">{{ uploadSuccess }}</p>
+    <p *ngIf="uploadError" class="error">{{ uploadError }}</p>
+  </div>
+</div>

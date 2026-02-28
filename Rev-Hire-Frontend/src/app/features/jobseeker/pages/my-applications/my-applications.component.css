@@ -1,0 +1,141 @@
+.applications-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 20px;
+}
+.application-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.application-card h3 {
+  margin: 0 0 5px;
+}
+.company {
+  font-weight: 500;
+  color: #007bff;
+  margin: 5px 0;
+}
+.applied-date {
+  color: #666;
+  font-size: 14px;
+}
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin: 10px 0 15px; /* space below status */
+}
+.status-applied {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+.status-review {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.status-shortlisted {
+  background-color: #d4edda;
+  color: #155724;
+}
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.status-withdrawn {
+  background-color: #d6d8d9;
+  color: #1b1e21;
+}
+.cover-letter {
+  font-style: italic;
+  color: #555;
+  margin: 10px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.btn-withdraw, .btn-view {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+.btn-withdraw {
+  background-color: #ffc107;
+  color: #212529;
+}
+.btn-withdraw:hover {
+  background-color: #e0a800;
+}
+.btn-view {
+  background-color: #007bff;
+  color: white;
+}
+.btn-view:hover {
+  background-color: #0056b3;
+}
+/* Modal styles (if not already present) */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

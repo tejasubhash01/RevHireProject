@@ -1,0 +1,26 @@
+<div class="notifications-container">
+  <div class="header">
+    <h1>Notifications</h1>
+    <button (click)="markAllAsRead()" class="btn-mark-all" [disabled]="notifications.length === 0">
+      Mark All as Read
+    </button>
+  </div>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && notifications.length === 0" class="no-data">
+    No notifications.
+  </div>
+
+  <div class="notifications-list">
+    <div *ngFor="let notif of notifications" class="notification-item" [class.unread]="!notif.isRead">
+      <div class="notification-content">
+        <p class="message">{{ notif.message }}</p>
+        <p class="time">{{ getRelativeTime(notif.createdAt) }}</p>
+
+      </div>
+      <button *ngIf="!notif.isRead" (click)="markAsRead(notif.id)" class="btn-read">Mark Read</button>
+    </div>
+  </div>
+</div>

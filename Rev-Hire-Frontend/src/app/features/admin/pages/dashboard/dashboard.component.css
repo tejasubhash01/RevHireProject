@@ -1,0 +1,39 @@
+.admin-dashboard {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+h1 {
+  margin-bottom: 20px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.stat-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.stat-card h3 {
+  margin: 0 0 10px;
+  color: #555;
+}
+.stat {
+  font-size: 2em;
+  font-weight: bold;
+  color: #007bff;
+  margin: 0;
+}
+.error {
+  color: red;
+  text-align: center;
+}
+.ping {
+  margin-top: 20px;
+  color: #28a745;
+}

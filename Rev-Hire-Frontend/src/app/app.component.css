@@ -1,0 +1,5 @@
+main {
+  min-height: calc(100vh - 120px); /* adjust if navbar+footer height changes */
+  padding: 20px;
+  padding-bottom: 80px; /* space for fixed footer */
+}

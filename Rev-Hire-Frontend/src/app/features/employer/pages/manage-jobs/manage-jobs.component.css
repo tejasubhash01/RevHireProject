@@ -1,0 +1,97 @@
+.manage-jobs-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+.error {
+  color: #dc3545;
+}
+.jobs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.jobs-table th, .jobs-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+.jobs-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.status-active {
+  background-color: #d4edda;
+  color: #155724;
+}
+.status-closed {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.status-filled {
+  background-color: #cce5ff;
+  color: #004085;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn:hover {
+  opacity: 0.8;
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-secondary {
+  background-color: #3b86c8;
+  color: white;
+}
+.back-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}

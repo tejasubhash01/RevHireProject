@@ -1,0 +1,47 @@
+<div class="dashboard-container">
+  <h1>Job Seeker Dashboard</h1>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="profile && !loading" class="profile-summary">
+    <h2>Welcome, {{ profile.name }}!</h2>
+    <p><strong>Headline:</strong> {{ profile.headline || 'Not set' }}</p>
+    <p><strong>Employment Status:</strong> {{ profile.employmentStatus || 'Not set' }}</p>
+    <p><strong>Location:</strong> {{ profile.location || 'Not set' }}</p>
+  </div>
+
+  <div *ngIf="stats && !loading" class="stats-grid">
+    <div class="stat-card">
+      <h3>Total Applications</h3>
+      <p class="stat">{{ stats.total }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Applied</h3>
+      <p class="stat">{{ stats.applied }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Under Review</h3>
+      <p class="stat">{{ stats.underReview }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Shortlisted</h3>
+      <p class="stat">{{ stats.shortlisted }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Rejected</h3>
+      <p class="stat">{{ stats.rejected }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Withdrawn</h3>
+      <p class="stat">{{ stats.withdrawn }}</p>
+    </div>
+  </div>
+
+
+ <div class="dashboard-actions">
+  <a routerLink="/jobseeker/view-profile" class="profile-link">View Profile</a>
+  <a routerLink="/jobseeker/profile" class="profile-link">Edit Profile</a>
+  <a routerLink="/jobseeker/resume" class="resume-link">Manage Resume</a>
+  <a routerLink="/jobseeker/my-applications" class="applications-link">My Applications</a>
+  <a routerLink="/jobseeker/favourites" class="favourites-link">Favourites</a>
+</div>
+</div>

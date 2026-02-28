@@ -1,0 +1,12 @@
+<div class="admin-dashboard">
+  <h1>Admin Dashboard</h1>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!loading" class="stats-grid">
+    <div class="stat-card">
+      <h3>Total Users</h3>
+      <p class="stat">{{ stats.userCount }}</p>
+    </div>
+  </div>
+  <p *ngIf="pingMessage" class="ping">Ping: {{ pingMessage }}</p>
+</div>

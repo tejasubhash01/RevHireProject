@@ -1,0 +1,24 @@
+<div class="login-container">
+
+  <div class="login-card">
+    <div class="logo-container">
+  <img src="assets/logo.png" alt="RevHire Logo">
+</div>
+   <strong><h2>Candidate Login</h2></strong>
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" [(ngModel)]="credentials.email" required email>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="credentials.password" required>
+      </div>
+      <p class="forgot-link"><a routerLink="/forgot-password">Forgot password?</a></p>
+      <button type="submit">LOGIN</button>
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+    </form>
+    <p class="register-link">Don't have an account? <a routerLink="/register">Sign up</a></p>
+  </div>
+</div>
+

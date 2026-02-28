@@ -1,0 +1,17 @@
+<div class="profile-container view-mode">
+  <h1>Company Profile</h1>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="profile && !loading" class="profile-details">
+    <p><strong>Company Name:</strong> {{ profile.companyName }}</p>
+    <p><strong>Industry:</strong> {{ profile.industry || 'N/A' }}</p>
+    <p><strong>Company Size:</strong> {{ profile.companySize || 'N/A' }}</p>
+    <p><strong>Description:</strong> {{ profile.companyDescription || 'N/A' }}</p>
+    <p><strong>Website:</strong> <a [href]="profile.website" target="_blank">{{ profile.website || 'N/A' }}</a></p>
+    <p><strong>Location:</strong> {{ profile.location || 'N/A' }}</p>
+  </div>
+  <div class="actions">
+    <a routerLink="/employer/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    <a routerLink="/employer/profile" class="btn btn-primary">Edit Profile</a>
+  </div>
+</div>

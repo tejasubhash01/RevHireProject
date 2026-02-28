@@ -1,0 +1,37 @@
+<nav>
+  <div class="nav-container">
+    <div class="logo">
+      <a routerLink="/">
+       <a routerLink="/" class="brand">
+  <img src="assets/image.png" alt="RevHire" class="logo" />
+</a>
+      </a>
+    </div>
+    <div class="nav-links">
+
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/jobs" routerLinkActive="active">Jobs</a>
+      <a routerLink="/about" routerLinkActive="active">About Us</a>
+      <a routerLink="/support" routerLinkActive="active">Support</a>
+
+
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/login" routerLinkActive="active">Login</a>
+        <a routerLink="/register" routerLinkActive="active">Register</a>
+      </ng-container>
+
+
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <a *ngIf="authService.getRole() === 'JOB_SEEKER'" routerLink="/jobseeker/dashboard" routerLinkActive="active">Dashboard</a>
+        <a *ngIf="authService.getRole() === 'EMPLOYER'" routerLink="/employer/dashboard" routerLinkActive="active">Dashboard</a>
+
+        <a routerLink="/notifications" class="notification-icon" [class.has-unread]="unreadCount > 0">
+          🔔
+          <span *ngIf="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+        </a>
+
+        <a (click)="logout()" style="cursor:pointer;">Logout</a>
+      </ng-container>
+    </div>
+  </div>
+</nav>
